@@ -1318,37 +1318,7 @@ namespace FFXIVMonReborn.Views
 
         private void Scripting_RunOnPacket(PacketEntry item, ScriptingProvider provider)
         {
-            PacketEventArgs args = null;
-
-            string structText = null;
-            structText = item.Direction == "S" ? _db.GetServerZoneStruct(int.Parse(item.Message, NumberStyles.HexNumber)) : _db.GetClientZoneStruct(int.Parse(item.Message, NumberStyles.HexNumber));
-
-
-            if (structText != null)
-            {
-                if (structText.Length != 0)
-                {
-                    try
-                    {
-                        var structProvider = new Struct();
-                        var structEntries = structProvider.Parse(structText, item.Data);
-
-                        args = new PacketEventArgs(item, structEntries.Item2, _mainWindow.LogView);
-                    }
-                    catch (Exception exc)
-                    {
-                        _mainWindow.LogView.WriteLine($"[EXCEPTION] Thrown for {item.Message} - {item.Name}: {exc}");
-                        args = new PacketEventArgs(item, null, _mainWindow.LogView);
-                    }
-                }
-            }
-            else
-            {
-                args = new PacketEventArgs(item, null, _mainWindow.LogView);
-            }
-
-            if(args != null)
-                provider.ExecuteScripts(null, args);
+            provider.ExecuteScripts(null, new PacketEventArgs(item, null, _mainWindow.LogView));
         }
 
         
